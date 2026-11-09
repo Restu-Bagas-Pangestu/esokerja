@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://restu-bagas-pangestu.github.io/esokerja/sitemap.xml
