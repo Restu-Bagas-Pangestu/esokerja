@@ -20,3 +20,7 @@ collection `jobs` (approved, shown on the site) and `queue` (waiting for review 
 3. `python3 build.py`
 4. If `git status --porcelain` shows changes: commit (`Sinkron lowongan <YYYY-MM-DD>`) and push to `main`.
    Pages also changes daily because the "diperbarui" date and deadline badges are rebuilt; that is expected.
+
+## Notes
+- The public UI mirrors the Loker Sarjana review page (navy search band, field chips, card grid, side sheet). Keep them consistent when one changes.
+- `import_jobs.py` strips reviewer notes (`Catatan review: ...`) from summaries; they must never reach the public site.

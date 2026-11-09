@@ -16,8 +16,8 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FIELDS = [
     "title", "company", "location", "province", "field", "employment_type",
-    "degree", "deadline", "posted", "summary", "requirements", "apply_url",
-    "approved_at",
+    "degree", "majors", "deadline", "posted", "summary", "requirements",
+    "apply_url", "approved_at", "found_at",
 ]
 
 
@@ -43,7 +43,12 @@ def main() -> int:
         job = {"id": job_id}
         for k in FIELDS:
             v = data.get(k, "")
-            job[k] = v if isinstance(v, str) else str(v)
+            if k == "majors" and isinstance(v, list):
+                job[k] = [str(x) for x in v]
+            else:
+                job[k] = v if isinstance(v, str) else str(v)
+        # Reviewer notes ("Catatan review: ...") are for the admin only, never the public site.
+        job["summary"] = re.split(r"\s*Catatan review\s*:", job.get("summary", ""), flags=re.I)[0].strip()
         jobs.append(job)
 
     jobs.sort(key=lambda j: j.get("approved_at", ""), reverse=True)
