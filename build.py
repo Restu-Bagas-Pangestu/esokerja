@@ -9,6 +9,7 @@ import html
 import json
 import pathlib
 import re
+import hashlib
 import shutil
 
 ROOT = pathlib.Path(__file__).resolve().parent
@@ -17,6 +18,7 @@ CFG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 BASE_URL = CFG["base_url"].rstrip("/")
 BASE = CFG["base_path"] if CFG["base_path"].endswith("/") else CFG["base_path"] + "/"
 SITE = CFG["site_name"]
+VER = lambda name: hashlib.sha1((ROOT / "src" / name).read_bytes()).hexdigest()[:8]
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 MONTHS_LONG = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus",
                "September", "Oktober", "November", "Desember"]
@@ -101,7 +103,7 @@ def page(title, description, path, body, current="", extra_head="", noindex=Fals
 <meta name="theme-color" content="#0F2547">
 <link rel="icon" href="{BASE}assets/icon.svg" type="image/svg+xml">
 {robots}{FONTS}
-<link rel="stylesheet" href="{BASE}assets/style.css">
+<link rel="stylesheet" href="{BASE}assets/style.css?v={VER('style.css')}">
 {extra_head}
 </head>
 <body data-base="{e(BASE)}">
@@ -119,7 +121,7 @@ def page(title, description, path, body, current="", extra_head="", noindex=Fals
 <span>{e(SITE)} mengumpulkan info dari halaman karier resmi. Selalu pastikan detail di situs perusahaan sebelum melamar.</span>
 <nav aria-label="Kaki halaman"><a href="{BASE}tentang/">Tentang</a><a href="{BASE}privasi/">Kebijakan Privasi</a></nav>
 </div></footer>
-<script src="{BASE}assets/app.js" defer></script>
+<script src="{BASE}assets/app.js?v={VER('app.js')}" defer></script>
 </body>
 </html>
 """
