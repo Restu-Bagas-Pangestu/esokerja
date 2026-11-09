@@ -262,7 +262,7 @@ def index_page(jobs):
     provs = sorted({j.get("province") for j in open_jobs if j.get("province")})
     data = json.dumps(open_jobs, ensure_ascii=False).replace("</", "<\\/")
     links = "".join(f'<li><a href="{BASE}lowongan/{e(j["id"])}/">{e(j.get("title"))} – {e(j.get("company"))}</a></li>' for j in open_jobs)
-    band = f"""<h1 class="sr-only">Lowongan kerja S-1 seluruh Indonesia</h1>
+    band = f"""<div class="intro"><h1>{e(SITE)} mengumpulkan info lowongan kerja dari seluruh Indonesia</h1></div>
 <div class="searchbar" id="searchbar" role="search">
 <label class="sb-cell">{SVG["search"]}<input id="q" type="search" placeholder="Posisi, perusahaan, atau kata kunci" aria-label="Cari posisi atau perusahaan"></label>
 <label class="sb-cell">{SVG["pin"]}<select id="prov" aria-label="Provinsi"><option value="">Semua provinsi</option></select></label>
@@ -285,16 +285,8 @@ def about_page():
     body = f"""<div class="prose">
 <h1>Tentang {e(SITE)}</h1>
 <p>{e(SITE)} mengumpulkan info lowongan kerja untuk lulusan S-1 dari seluruh Indonesia. Namanya gabungan dari <em>esok</em> dan <em>kerja</em>: pekerjaan untuk hari esok.</p>
-<h2>Cara kami memilih lowongan</h2>
-<ul>
-<li>Lowongan dicari dari halaman karier resmi perusahaan, portal rekrutmen instansi, dan pengumuman resmi lainnya.</li>
-<li>Setiap lowongan dicek manual sebelum tayang: link pendaftaran harus mengarah ke kanal resmi, dan tidak ada pungutan biaya.</li>
-<li>Lowongan yang batas pendaftarannya sudah lewat otomatis ditandai ditutup dan diturunkan.</li>
-</ul>
 <h2>Kami tidak menerima lamaran</h2>
 <p>{e(SITE)} hanya menyebarkan informasi. Semua pendaftaran dilakukan langsung di situs resmi perusahaan. Kami tidak meminta data pribadi, CV, atau biaya apa pun dari pelamar.</p>
-<h2>Kontak</h2>
-{contact_html}
 </div>"""
     return page("Tentang", f"Tentang {SITE}: info lowongan S-1 seluruh Indonesia yang dicek manual.", "tentang/", body, current="about")
 
