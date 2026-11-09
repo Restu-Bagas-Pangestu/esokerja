@@ -260,10 +260,7 @@ def index_page(jobs):
     provs = sorted({j.get("province") for j in open_jobs if j.get("province")})
     data = json.dumps(open_jobs, ensure_ascii=False).replace("</", "<\\/")
     links = "".join(f'<li><a href="{BASE}lowongan/{e(j["id"])}/">{e(j.get("title"))} – {e(j.get("company"))}</a></li>' for j in open_jobs)
-    band = f"""<div class="intro">
-<h1>Lowongan S-1 untuk <em>hari esokmu</em></h1>
-<p><strong id="count">{len(open_jobs)}</strong> lowongan aktif dari {len(provs)} provinsi · dicek manual · diperbarui {fmt(TODAY, True)}</p>
-</div>
+    band = f"""<h1 class="sr-only">Lowongan kerja S-1 seluruh Indonesia</h1>
 <div class="searchbar" id="searchbar" role="search">
 <label class="sb-cell">{SVG["search"]}<input id="q" type="search" placeholder="Posisi, perusahaan, atau kata kunci" aria-label="Cari posisi atau perusahaan"></label>
 <label class="sb-cell">{SVG["pin"]}<select id="prov" aria-label="Provinsi"><option value="">Semua provinsi</option></select></label>
