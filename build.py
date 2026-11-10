@@ -76,6 +76,11 @@ SVG = {
 }
 
 
+FOOT_CONTACT = '<a href="{}tentang/#kontak">Kontak</a>'.format(BASE) if CFG.get("contact_email") else ""
+ADS_CLIENT = CFG.get("adsense_client", "").strip()
+ADS_HEAD = (f'<meta name="google-adsense-account" content="{ADS_CLIENT}">\n<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADS_CLIENT}" crossorigin="anonymous"></script>' if ADS_CLIENT else "")
+
+
 def page(title, description, path, body, current="", extra_head="", noindex=False, band_extra=""):
     canonical = BASE_URL + "/" + path
     full_title = title if title == SITE else f"{title} | {SITE}"
@@ -102,7 +107,7 @@ def page(title, description, path, body, current="", extra_head="", noindex=Fals
 <meta property="og:locale" content="id_ID">
 <meta name="theme-color" content="#0F2547">
 <link rel="icon" href="{BASE}assets/icon.svg" type="image/svg+xml">
-{robots}{FONTS}
+{robots}{ADS_HEAD}{FONTS}
 <link rel="stylesheet" href="{BASE}assets/style.css?v={VER('style.css')}">
 {extra_head}
 </head>
@@ -118,7 +123,7 @@ def page(title, description, path, body, current="", extra_head="", noindex=Fals
 {body}
 </main>
 <footer><div class="wrap">
-<nav aria-label="Kaki halaman"><a href="{BASE}tentang/">Tentang</a><a href="{BASE}privasi/">Kebijakan Privasi</a></nav>
+<nav aria-label="Kaki halaman"><a href="{BASE}tentang/">Tentang</a>{FOOT_CONTACT}<a href="{BASE}privasi/">Kebijakan Privasi</a></nav>
 </div></footer>
 <script src="{BASE}assets/app.js?v={VER('app.js')}" defer></script>
 </body>
@@ -279,25 +284,31 @@ def index_page(jobs):
 
 def about_page():
     contact = CFG.get("contact_email", "").strip()
-    contact_html = (f"<p>Untuk koreksi informasi atau pemasangan lowongan, hubungi kami di <strong>{e(contact)}</strong>.</p>"
-                    if contact else "<p>Untuk koreksi informasi atau pemasangan lowongan, hubungi pengelola situs ini.</p>")
+    contact_html = (f'<h2 id="kontak">Kontak</h2><p>Untuk pertanyaan, koreksi informasi, atau pemasangan lowongan, hubungi kami di <a href="mailto:{e(contact)}"><strong>{e(contact)}</strong></a>.</p>'
+                    if contact else "")
     body = f"""<div class="prose">
 <h1>Tentang {e(SITE)}</h1>
 <p>{e(SITE)} mengumpulkan info lowongan kerja dari seluruh Indonesia</p>
 <h2>Kami tidak menerima lamaran</h2>
 <p>{e(SITE)} hanya menyebarkan informasi. Semua pendaftaran dilakukan langsung di situs resmi perusahaan. Kami tidak meminta data pribadi, CV, atau biaya apa pun dari pelamar.</p>
+{contact_html}
 </div>"""
     return page("Tentang", f"Tentang {SITE}: info lowongan S-1 seluruh Indonesia yang dicek manual.", "tentang/", body, current="about")
 
 
 def privacy_page():
+    ADS_PRIVACY = ("""<h2>Iklan dan cookie</h2>
+<p>Situs ini menampilkan iklan dari Google AdSense. Google dan mitranya menggunakan cookie untuk menampilkan iklan berdasarkan kunjungan sebelumnya ke situs ini dan situs lain. Cookie iklan memungkinkan Google dan mitranya menayangkan iklan yang relevan bagi kamu.</p>
+<p>Kamu dapat menonaktifkan iklan yang dipersonalisasi melalui <a href="https://adssettings.google.com" rel="nofollow noopener" target="_blank">Setelan Iklan Google</a>, dan mempelajari lebih lanjut di <a href="https://policies.google.com/technologies/ads" rel="nofollow noopener" target="_blank">cara Google menggunakan cookie dalam iklan</a>.</p>""" if ADS_CLIENT else
+        "<p>Jika di kemudian hari kami menampilkan iklan (misalnya Google AdSense) atau memasang analitik, halaman ini akan diperbarui untuk menjelaskan penggunaan cookie oleh layanan tersebut.</p>")
     body = f"""<div class="prose">
 <h1>Kebijakan Privasi</h1>
 <p>Terakhir diperbarui {fmt(TODAY, True)}.</p>
 <h2>Data yang kami kumpulkan</h2>
 <p>{e(SITE)} tidak memiliki fitur akun, formulir lamaran, atau unggah CV. Kami tidak mengumpulkan nama, email, atau data pribadi pengunjung secara langsung.</p>
 <h2>Layanan pihak ketiga</h2>
-<p>Situs ini di-hosting oleh GitHub Pages dan memuat huruf dari Google Fonts. Layanan tersebut dapat mencatat data teknis seperti alamat IP dan jenis browser sesuai kebijakan privasi masing-masing. Jika di kemudian hari kami menampilkan iklan (misalnya Google AdSense) atau memasang analitik, penyedia layanan tersebut dapat menggunakan cookie untuk menampilkan iklan yang relevan. Halaman ini akan diperbarui saat itu terjadi.</p>
+<p>Situs ini di-hosting oleh GitHub Pages dan memuat huruf dari Google Fonts. Layanan tersebut dapat mencatat data teknis seperti alamat IP dan jenis browser sesuai kebijakan privasi masing-masing.</p>
+{ADS_PRIVACY}
 <h2>Tautan ke situs lain</h2>
 <p>Tombol lamar mengarahkan kamu ke situs resmi perusahaan atau instansi. Data yang kamu berikan di sana tunduk pada kebijakan privasi situs tersebut.</p>
 <h2>Perubahan kebijakan</h2>
@@ -340,6 +351,8 @@ def main():
     write("tentang/index.html", about_page())
     write("privasi/index.html", privacy_page())
     write("404.html", not_found_page())
+    if ADS_CLIENT:
+        write("ads.txt", f"google.com, {ADS_CLIENT.replace('ca-pub-', 'pub-')}, DIRECT, f08c47fec0942fa0\n")
 
     urls = [("", TODAY), ("tentang/", None), ("privasi/", None)]
     urls += [(f"lowongan/{j['id']}/", parse_date(j.get("approved_at")) or parse_date(j.get("posted")))

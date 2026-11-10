@@ -7,6 +7,7 @@ Static job-listing site for S-1 graduates in Indonesia, served by GitHub Pages f
 - `src/style.css`, `src/app.js` — copied into `docs/assets/` by the build.
 - `config.json` — site name, base URL/path. When a custom domain is bought: set `base_url` to `https://<domain>`, `base_path` to `/`, add `"custom_domain": "<domain>"`, rebuild.
 - Site copy is in Indonesian.
+- `contact_email` shows a Kontak section on /tentang/ and a footer link. `adsense_client` (ca-pub-…) adds the AdSense script + meta to every page, ads.txt, and the ad-cookie section of the privacy page. Leave it empty until Bagas has his publisher ID.
 
 ## Review page (source of truth)
 

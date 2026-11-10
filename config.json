@@ -3,7 +3,8 @@
   "tagline": "Lowongan S-1 untuk hari esokmu",
   "base_url": "https://esokerja.com",
   "base_path": "/",
-  "contact_email": "",
+  "contact_email": "admin@esokerja.com",
   "timezone_offset_hours": 7,
-  "custom_domain": "esokerja.com"
+  "custom_domain": "esokerja.com",
+  "adsense_client": ""
 }
