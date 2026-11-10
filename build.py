@@ -118,7 +118,6 @@ def page(title, description, path, body, current="", extra_head="", noindex=Fals
 {body}
 </main>
 <footer><div class="wrap">
-<span>{e(SITE)} mengumpulkan info dari halaman karier resmi. Selalu pastikan detail di situs perusahaan sebelum melamar.</span>
 <nav aria-label="Kaki halaman"><a href="{BASE}tentang/">Tentang</a><a href="{BASE}privasi/">Kebijakan Privasi</a></nav>
 </div></footer>
 <script src="{BASE}assets/app.js?v={VER('app.js')}" defer></script>
@@ -284,7 +283,7 @@ def about_page():
                     if contact else "<p>Untuk koreksi informasi atau pemasangan lowongan, hubungi pengelola situs ini.</p>")
     body = f"""<div class="prose">
 <h1>Tentang {e(SITE)}</h1>
-<p>{e(SITE)} mengumpulkan info lowongan kerja untuk lulusan S-1 dari seluruh Indonesia. Namanya gabungan dari <em>esok</em> dan <em>kerja</em>: pekerjaan untuk hari esok.</p>
+<p>{e(SITE)} mengumpulkan info lowongan kerja dari seluruh Indonesia</p>
 <h2>Kami tidak menerima lamaran</h2>
 <p>{e(SITE)} hanya menyebarkan informasi. Semua pendaftaran dilakukan langsung di situs resmi perusahaan. Kami tidak meminta data pribadi, CV, atau biaya apa pun dari pelamar.</p>
 </div>"""
