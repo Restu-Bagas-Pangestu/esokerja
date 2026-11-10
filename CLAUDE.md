@@ -1,6 +1,6 @@
 # Esokerja
 
-Static job-listing site for S-1 graduates in Indonesia, served by GitHub Pages from `docs/` on `main`.
+Static job-listing site for S-1 graduates in Indonesia, served by GitHub Pages from `docs/` on `main`, custom domain https://esokerja.com (DNS at Cloudflare, records DNS only).
 
 - `data/jobs.json` — the approved jobs (source for the site). Never edit by hand during a sync; it is replaced from the review page.
 - `build.py` — generates `docs/` (index, one page per job with JobPosting JSON-LD, about, privacy, sitemap, robots, 404). Standard library only.

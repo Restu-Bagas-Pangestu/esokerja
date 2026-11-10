@@ -1,8 +1,9 @@
 {
   "site_name": "Esokerja",
   "tagline": "Lowongan S-1 untuk hari esokmu",
-  "base_url": "https://restu-bagas-pangestu.github.io/esokerja",
-  "base_path": "/esokerja/",
+  "base_url": "https://esokerja.com",
+  "base_path": "/",
   "contact_email": "",
-  "timezone_offset_hours": 7
+  "timezone_offset_hours": 7,
+  "custom_domain": "esokerja.com"
 }
