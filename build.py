@@ -363,6 +363,8 @@ def main():
     sm.append("</urlset>")
     write("sitemap.xml", "\n".join(sm) + "\n")
     write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {BASE_URL}/sitemap.xml\n")
+    now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
+    write("status.json", json.dumps({"last_build": now, "jobs": len(jobs)}) + "\n")
     if CFG.get("custom_domain"):
         write("CNAME", CFG["custom_domain"].strip() + "\n")
 
