@@ -78,6 +78,8 @@ SVG = {
 
 FOOT_CONTACT = '<a href="{}tentang/#kontak">Kontak</a>'.format(BASE) if CFG.get("contact_email") else ""
 ADS_CLIENT = CFG.get("adsense_client", "").strip()
+CF_TOKEN = CFG.get("cf_analytics_token", "").strip()
+CF_BEACON = ("<script defer src=\"https://static.cloudflareinsights.com/beacon.min.js\" data-cf-beacon='" + json.dumps({"token": CF_TOKEN}) + "'></script>") if CF_TOKEN else ""
 ADS_HEAD = (f'<meta name="google-adsense-account" content="{ADS_CLIENT}">\n<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADS_CLIENT}" crossorigin="anonymous"></script>' if ADS_CLIENT else "")
 
 
@@ -126,6 +128,7 @@ def page(title, description, path, body, current="", extra_head="", noindex=Fals
 <nav aria-label="Kaki halaman"><a href="{BASE}tentang/">Tentang</a>{FOOT_CONTACT}<a href="{BASE}privasi/">Kebijakan Privasi</a></nav>
 </div></footer>
 <script src="{BASE}assets/app.js?v={VER('app.js')}" defer></script>
+{CF_BEACON}
 </body>
 </html>
 """
@@ -308,6 +311,7 @@ def privacy_page():
 <p>{e(SITE)} tidak memiliki fitur akun, formulir lamaran, atau unggah CV. Kami tidak mengumpulkan nama, email, atau data pribadi pengunjung secara langsung.</p>
 <h2>Layanan pihak ketiga</h2>
 <p>Situs ini di-hosting oleh GitHub Pages dan memuat huruf dari Google Fonts. Layanan tersebut dapat mencatat data teknis seperti alamat IP dan jenis browser sesuai kebijakan privasi masing-masing.</p>
+{"<p>Kami memakai Cloudflare Web Analytics untuk menghitung jumlah kunjungan dan halaman yang dibuka. Layanan ini tidak memakai cookie dan tidak melacak pengunjung secara pribadi.</p>" if CF_TOKEN else ""}
 {ADS_PRIVACY}
 <h2>Tautan ke situs lain</h2>
 <p>Tombol lamar mengarahkan kamu ke situs resmi perusahaan atau instansi. Data yang kamu berikan di sana tunduk pada kebijakan privasi situs tersebut.</p>
