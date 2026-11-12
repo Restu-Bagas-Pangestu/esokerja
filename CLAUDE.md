@@ -25,5 +25,6 @@ collection `jobs` (approved, shown on the site) and `queue` (waiting for review 
 - `docs/status.json` records the last build time, so every sync run commits and pushes (a heartbeat showing the scheduled task can still push).
 
 ## Notes
+- Header: white brand bar with the Esokerja logo (briefcase + "es-sun-kerja", the sun replaces the o; navy #0F2547, orange #E8540C), navy search band below on the home page.
 - The public UI mirrors the Loker Sarjana review page (navy search band, field chips, card grid, side sheet). Keep them consistent when one changes.
 - `import_jobs.py` strips reviewer notes (`Catatan review: ...`) from summaries; they must never reach the public site.

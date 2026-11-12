@@ -54,15 +54,18 @@ def safe_url(u):
     return u if isinstance(u, str) and re.match(r"^https?://", u) else ""
 
 
-LOGO_MARK = ('<svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true">'
-             '<path d="M4.5 18a8.5 8.5 0 0 1 17 0Z" fill="#0F2547"/>'
-             '<path d="M2.5 21.5h21" stroke="#0F2547" stroke-width="2.6" stroke-linecap="round"/>'
-             '<path d="M13 3.5v3M5.8 7l2 2M20.2 7l-2 2" stroke="#0F2547" stroke-width="2.4" stroke-linecap="round"/></svg>')
-ICON_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 34 34">'
-            '<rect width="34" height="34" rx="9" fill="#FFC83D"/><g transform="translate(4 4)">'
-            '<path d="M4.5 18a8.5 8.5 0 0 1 17 0Z" fill="#0F2547"/>'
-            '<path d="M2.5 21.5h21" stroke="#0F2547" stroke-width="2.6" stroke-linecap="round"/>'
-            '<path d="M13 3.5v3M5.8 7l2 2M20.2 7l-2 2" stroke="#0F2547" stroke-width="2.4" stroke-linecap="round"/></g></svg>')
+BAG = ('<path d="M37 32v-8a6 6 0 0 1 6-6h14a6 6 0 0 1 6 6v8" fill="none" stroke="{ink}" stroke-width="8" stroke-linecap="round"/>'
+       '<rect x="12" y="32" width="76" height="56" rx="13" fill="{bg}" stroke="{ink}" stroke-width="8"/>'
+       '<path d="M30 73a20 20 0 0 1 40 0Z" fill="#E8540C"/>'
+       '<path d="M24 73h52" stroke="{ink}" stroke-width="5" stroke-linecap="round"/>'
+       '<path d="M50 41v6M36 46l3.5 4M64 46l-3.5 4M27 58l5 2M73 58l-5 2" stroke="#E8540C" stroke-width="4.5" stroke-linecap="round"/>')
+SUN_O = ('<svg class="sun-o" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="29" fill="#E8540C"/>'
+         '<path d="M50 3v9M50 88v9M3 50h9M88 50h9M16.8 16.8l6.3 6.3M76.9 76.9l6.3 6.3M83.2 16.8l-6.3 6.3M23.1 76.9l-6.3 6.3" '
+         'stroke="#E8540C" stroke-width="6.5" stroke-linecap="round"/></svg>')
+LOGO_HTML = ('<svg class="logo-bag" viewBox="0 0 100 100" aria-hidden="true">' + BAG.format(ink="var(--brand-ink)", bg="var(--brand-bg)") + '</svg>'
+             '<span class="logo-word">es' + SUN_O + 'kerja</span>')
+ICON_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 100 100">'
+            '<rect width="100" height="100" rx="22" fill="#FFFFFF"/>' + BAG.format(ink="#0F2547", bg="#FFFFFF") + '</svg>')
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
@@ -92,7 +95,6 @@ def page(title, description, path, body, current="", extra_head="", noindex=Fals
         for key, href, label in [("home", "", "Lowongan"), ("about", "tentang/", "Tentang")]
     )
     robots = '<meta name="robots" content="noindex">' if noindex else ""
-    band_cls = "band" if band_extra else "band slim"
     return f"""<!doctype html>
 <html lang="id">
 <head>
@@ -107,20 +109,20 @@ def page(title, description, path, body, current="", extra_head="", noindex=Fals
 <meta property="og:url" content="{e(canonical)}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="id_ID">
-<meta name="theme-color" content="#0F2547">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="{BASE}assets/icon.svg" type="image/svg+xml">
 {robots}{ADS_HEAD}{FONTS}
 <link rel="stylesheet" href="{BASE}assets/style.css?v={VER('style.css')}">
 {extra_head}
 </head>
 <body data-base="{e(BASE)}">
-<header class="{band_cls}"><div class="wrap">
-<div class="topbar">
-<a class="logo" href="{BASE}"><span class="logo-mark">{LOGO_MARK}</span>{e(SITE)}</a>
+<header>
+<div class="brandbar"><div class="wrap topbar">
+<a class="logo" href="{BASE}" aria-label="{e(SITE)} – beranda">{LOGO_HTML}</a>
 <nav class="nav" aria-label="Utama">{nav}</nav>
-</div>
-{band_extra}
-</div></header>
+</div></div>
+{('<div class="band"><div class="wrap">' + band_extra + '</div></div>') if band_extra else ''}
+</header>
 <main class="wrap">
 {body}
 </main>
