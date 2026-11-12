@@ -16,7 +16,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FIELDS = [
     "title", "company", "location", "province", "field", "employment_type",
-    "degree", "majors", "deadline", "posted", "summary", "requirements",
+    "degree", "majors", "work_mode", "deadline", "posted", "summary", "requirements",
     "apply_url", "approved_at", "found_at",
 ]
 

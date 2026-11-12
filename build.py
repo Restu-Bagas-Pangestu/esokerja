@@ -75,6 +75,8 @@ SVG = {
     "search": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
     "pin": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
     "cap": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5"/></svg>',
+    "layers": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>',
+    "home": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>',
     "book": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5Z"/><path d="M4 19a2 2 0 0 1 2-2h12"/></svg>',
 }
 
@@ -161,6 +163,18 @@ def avatar_html(name):
     return f'<span class="avatar" aria-hidden="true" style="background:var(--av{n});color:var(--av{n}i)">{e(initials(name))}</span>'
 
 
+def work_mode(job):
+    wm = str(job.get("work_mode", "")).strip().lower()
+    if wm in ("remote", "hybrid", "on-site", "onsite", "on site", "wfo"):
+        return {"remote": "Remote", "hybrid": "Hybrid"}.get(wm, "On-site")
+    t = " ".join(str(job.get(k, "")) for k in ("employment_type", "title", "location", "province", "summary")).lower()
+    if "hybrid" in t:
+        return "Hybrid"
+    if re.search(r"\bremote\b|\bwfh\b|work from home|kerja dari rumah|jarak jauh", t):
+        return "Remote"
+    return "On-site"
+
+
 def deadline_pill(job):
     d = parse_date(job.get("deadline"))
     n = days_left(job)
@@ -209,7 +223,7 @@ def job_posting_ld(job):
         ld["validThrough"] = f"{d.isoformat()}T23:59:00+07:00"
     prov = str(job.get("province", "")).strip()
     city = str(job.get("location", "")).split(",")[0].strip()
-    if prov.lower() == "remote":
+    if prov.lower() == "remote" or work_mode(job) == "Remote":
         ld["jobLocationType"] = "TELECOMMUTE"
         ld["applicantLocationRequirements"] = {"@type": "Country", "name": "Indonesia"}
     else:
@@ -236,7 +250,7 @@ def job_page(job):
         majors = ", ".join(majors)
     facts = [
         ("Lokasi", place), ("Jenjang", " / ".join(dg) if dg else job.get("degree")), ("Jurusan", majors),
-        ("Bidang", job.get("field")), ("Tipe kerja", job.get("employment_type")),
+        ("Bidang", job.get("field")), ("Sistem kerja", work_mode(job)), ("Tipe kerja", job.get("employment_type")),
         ("Batas lamaran", fmt(parse_date(job.get("deadline"))) or "Tidak disebut"),
         ("Dipasang", fmt(parse_date(job.get("posted")))),
     ]
@@ -275,10 +289,12 @@ def index_page(jobs):
 <div class="searchbar" id="searchbar" role="search">
 <label class="sb-cell">{SVG["search"]}<input id="q" type="search" placeholder="Posisi, perusahaan, atau kata kunci" aria-label="Cari posisi atau perusahaan"></label>
 <label class="sb-cell">{SVG["pin"]}<select id="prov" aria-label="Provinsi"><option value="">Semua provinsi</option></select></label>
-<label class="sb-cell">{SVG["cap"]}<select id="deg" aria-label="Jenjang pendidikan"><option value="">Semua jenjang</option></select></label>
+<label class="sb-cell">{SVG["layers"]}<select id="field" aria-label="Bidang"><option value="">Semua bidang</option></select></label>
 <label class="sb-cell">{SVG["book"]}<select id="maj" aria-label="Jurusan"><option value="">Pilih jurusan</option></select></label>
+<label class="sb-cell">{SVG["cap"]}<select id="deg" aria-label="Jenjang pendidikan"><option value="">Semua jenjang</option></select></label>
+<label class="sb-cell">{SVG["home"]}<select id="mode" aria-label="Sistem kerja"><option value="">Semua sistem kerja</option></select></label>
 </div>"""
-    body = f"""<div class="cats" id="cats" role="group" aria-label="Bidang"></div>
+    body = f"""<div class="list-head"><span id="shown"></span></div>
 <div class="grid" id="jobList"><noscript><div class="noscript-list"><ul>{links}</ul></div></noscript></div>
 <script type="application/json" id="jobs-data">{data}</script>
 <div class="scrim" id="scrim" hidden></div>
